@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {compareMortgages} from '../src/model.js';
+const defaults={principal:350000,oldRate:7,remainingYears:25,newRate:6,newYears:30,fees:7000,financeFees:false,annualReturn:4,horizonYears:10};
+const run=(changes={})=>compareMortgages({...defaults,...changes});
+test('zero return makes basic and advanced outcomes identical',()=>{const r=run({annualReturn:0});for(const row of r.rows)assert.ok(Math.abs(row.financial-row.adjusted)<1e-6);assert.equal(r.cashBreakEven,r.investmentCashBreakEven);assert.equal(r.financialBreakEven,r.investmentFinancialBreakEven)});
+test('upfront fees are initially negative invested cash',()=>{const r=run();assert.equal(r.rows[0].cash,-7000);assert.equal(r.rows[0].invest,-7000)});
+test('financed fees create no upfront cash outlay',()=>{const r=run({financeFees:true});assert.equal(r.cashBreakEven,null);assert.equal(r.investmentCashBreakEven,null);assert.equal(r.rows[0].cash,0);assert.equal(r.rows[0].newBalance,357000)});
+test('paid off loan has zero balance and no further interest',()=>{const r=run({horizonYears:30});assert.equal(r.rows[300].oldBalance,0);assert.equal(r.rows[360].newBalance,0);assert.ok(Math.abs(r.rows[360].oldInterest-r.rows[300].oldInterest)<1e-6)});
+test('monthly difference changes after old loan payoff',()=>{const r=run({horizonYears:30});assert.ok(r.rows[301].cash-r.rows[300].cash<0)});
+test('identical mortgages without fees have zero advantage',()=>{const r=run({newRate:7,newYears:25,fees:0});for(const row of r.rows)assert.ok(Math.abs(row.financial)<0.01)});
+test('rate comparison matches primary result',()=>{const r=run();assert.ok(Math.abs(r.rateComparison(6).atHorizon.adjusted-r.atHorizon.adjusted)<1e-6)});
+test('rejects invalid inputs',()=>assert.throws(()=>run({principal:-1}),RangeError));

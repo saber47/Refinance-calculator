@@ -1,32 +1,27 @@
-# Mortgage Refinance & Investment Calculator
+# Mortgage Refinance Calculator
 
-A privacy-friendly, single-file static calculator comparing refinancing costs, monthly principal-and-interest savings, invested cash flow, and remaining mortgage equity.
+Privacy-first static mortgage refinance calculator. No analytics, cookies, storage, third-party scripts, or data transmission. Generic sample values only.
 
-## Run locally
-Open `index.html` in any modern browser. No installation, account, or server required.
+## Structure
+- `index.html` — accessible markup and inputs
+- `styles.css` — presentation
+- `src/model.js` — pure amortization, cash-flow, investment, and break-even calculations
+- `src/chart.js` — canvas visualization
+- `src/app.js` — DOM bindings and UI rendering
+- `tests/model.test.js` — Node built-in unit tests
+- `tests/e2e/calculator.spec.js` — Playwright browser integration tests
+- `.github/workflows/deploy.yml` — test-gated GitHub Pages deployment
 
-## Publish with GitHub Pages
-1. Create a **public** GitHub repository, e.g. `refinance-calculator`.
-2. Upload `index.html` and this README to the repository root on the `main` branch.
-3. In repository **Settings → Pages**, select **Deploy from a branch**, `main`, `/ (root)` and save.
-4. Your URL will normally be `https://YOUR-USERNAME.github.io/refinance-calculator/` after deployment.
+## Local development
+Serve the repository directory using `python3 -m http.server 4173` and open http://localhost:4173. ES modules require an HTTP server rather than a file:// URL.
 
-The example inputs are generic and are not user-specific. Refinance fees default to an editable 2% estimate of the outstanding balance; editing the dollar value locks the override until the user re-enables the percentage estimate. The basic results show monthly payment savings, simple cash-flow break-even, interest savings, and net wealth benefit. An expandable advanced section shows interest-based break-even measures, investment opportunity costs, and a projection chart. Calculations run locally in the browser. No external scripts, trackers, cookies, local or session storage, IndexedDB, or network calls are used. Inputs are held in page memory only and are not added to URLs.
+Run `npm install`, `npm test`, `npx playwright install chromium`, then `npm run test:e2e`.
 
-## Model assumptions
-- Both loans amortize monthly at constant rates throughout the selected horizon.
-- Investment returns are an annual effective rate, converted to an equivalent monthly rate.
-- Monthly P&I differences are invested at the end of each month; if negative, they are a cash-flow cost.
-- Cash-paid fees reduce invested wealth at their compounded opportunity cost; financed fees increase loan principal.
-- Home-equity difference equals old outstanding principal minus new outstanding principal at the horizon.
-- Net wealth benefit equals invested savings (net of fees) plus home-equity difference.
-- Break-even is the first month when the relevant net benefit is nonnegative.
+## Model
+Rates remain fixed, payments stop at loan payoff, and each monthly payment difference is invested at the end of its month. Cash-paid fees reduce investment wealth at inception; financed fees increase the new principal. Basic uses 0% investment return. Financial gain/loss includes investment or cash-flow differences and outstanding mortgage debt differences. Break-even is the first nonnegative month through the longer loan term. Home appreciation cancels because both choices involve the same house. The model excludes ARM resets, taxes, inflation, and investment volatility.
 
-This model does not forecast ARM resets or model taxes, PMI, escrow/prepaids, or investment risk.
-## Break-even definitions
-- **Simple cash-flow:** monthly payment savings accumulate until they equal cash-paid closing costs. This does not measure interest saved or principal differences.
-- **Simple interest:** cumulative interest avoided equals upfront cash fees.
-- **Investment-adjusted interest:** the future value of monthly interest savings equals the future value of upfront cash fees at the assumed investment return.
-- **Net wealth:** invested monthly payment differences less compounded cash fees, plus the difference in outstanding mortgage balances.
+GitHub Actions tests on pushes and pull requests and deploys only after tests pass. In GitHub Settings → Pages, set Source to **GitHub Actions**.
 
-For fees financed into the new mortgage, their effect is included in the new principal and interest rather than treated as an upfront cash expense. The model assumes fixed rates through the comparison period and limits the horizon to the shorter remaining loan term.
+## Important disclaimer
+
+This calculator is a personal passion project created for educational and experimental purposes. It is not financial, investment, mortgage, tax, or legal advice, and is not intended to be relied upon for financial or investment decisions. Results are based on simplified assumptions and may be inaccurate or incomplete. Please verify information independently and consult qualified professionals before making financial decisions.
