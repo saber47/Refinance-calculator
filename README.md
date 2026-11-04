@@ -24,4 +24,4 @@ GitHub Actions tests on pushes and pull requests and deploys only after tests pa
 
 ## Important disclaimer
 
-**For educational purposes only — not financial, investment, mortgage, tax, or legal advice.** Results are simplified estimates, not guaranteed, and must not be the sole basis for financial decisions. Independently verify loan terms and calculations with lenders and qualified professionals. The software is provided **as is**, without warranties, and liability is disclaimed to the maximum extent permitted by applicable law. See [DISCLAIMER.md](DISCLAIMER.md) for the full terms and limitations.
+This calculator is a personal passion project created for educational and experimental purposes. It is not financial, investment, mortgage, tax, or legal advice, and is not intended to be relied upon for financial or investment decisions. Results are based on simplified assumptions and may be inaccurate or incomplete. Please verify information independently and consult qualified professionals before making financial decisions.
